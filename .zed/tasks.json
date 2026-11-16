@@ -1,0 +1,14 @@
+[
+  {
+    "label": "Serveur local (port 5500)",
+    "command": "python3 -m http.server 5500",
+    "use_new_terminal": false,
+    "allow_concurrent_runs": false,
+    "reveal": "always"
+  },
+  {
+    "label": "Nouvelle expérience",
+    "command": "sh scripts/nouvelle-experience.sh $ZED_CUSTOM_numero $ZED_CUSTOM_nom",
+    "use_new_terminal": true
+  }
+]

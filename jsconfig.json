@@ -1,0 +1,9 @@
+{
+  "compilerOptions": {
+    "checkJs": false,
+    "target": "ES2022",
+    "types": ["p5/global"]
+  },
+  "include": ["exercices/**/*.js", "experiences/**/*.js", "projet/**/*.js"],
+  "exclude": ["libs", "node_modules"]
+}

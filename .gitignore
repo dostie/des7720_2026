@@ -1,0 +1,27 @@
+# macOS / éditeurs
+.DS_Store
+.idea/
+
+# Médias lourds ou bruts (gardés dans le dossier local du cours)
+*.mov
+*.mp4
+*.heic
+*.HEIC
+
+# Dépendances
+node_modules/
+package-lock.json
+
+# Secrets et informations personnelles: ne jamais versionner
+.env
+.env.*
+*.pem
+*.key
+*.p12
+*.pfx
+id_rsa*
+id_ed25519*
+.npmrc
+credentials*
+secrets*
+*.log

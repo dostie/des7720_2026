@@ -1,0 +1,7 @@
+{
+  "languages": {
+    "JavaScript": { "tab_size": 2 },
+    "HTML": { "tab_size": 2 }
+  },
+  "file_scan_exclusions": ["**/.git", "**/.DS_Store", "**/node_modules"]
+}

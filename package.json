@@ -1,0 +1,14 @@
+{
+  "name": "des7720-2026",
+  "private": true,
+  "description": "Expérimentations p5.js, DES7720 partie 2",
+  "scripts": {
+    "dev": "python3 -m http.server 5500",
+    "nouvelle": "sh scripts/nouvelle-experience.sh",
+    "verifier": "sh scripts/verifier-confidentialite.sh --tout",
+    "hooks": "sh scripts/installer-hooks.sh"
+  },
+  "devDependencies": {
+    "@types/p5": "1.7.7"
+  }
+}
