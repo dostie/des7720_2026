@@ -1,5 +1,10 @@
 # Journal, AAAA-MM-JJ, cours N
 
+Page du cours: https://juniorvigneault.github.io/DES7720_2026/
+Thème:
+Tutoriel: 
+Présentation: 
+
 ## Intention
 Qu'est-ce que je voulais explorer?
 
