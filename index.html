@@ -1,36 +1,136 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="fr" data-theme="dark">
 <head>
-  <meta charset="utf-8">
-  <title>DES7720, expériences</title>
-  <style>
-    body { font: 16px/1.5 "Helvetica Neue", Helvetica, Arial, sans-serif; max-width: 40rem; margin: 3rem auto; padding: 0 1rem; }
-    code { background: #eee; padding: 0 .25em; }
-  </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DES7720 / Atelier de design d'expériences interactives 1</title>
+<style>
+:root { --bg:#fafafa; --fg:#111; --dim:#888; --ac:#e8590c; }
+[data-theme="dark"] { --bg:#111; --fg:#ddd; --dim:#777; --ac:#ff922b; }
+* { box-sizing: border-box; }
+html, body { margin: 0; background: var(--bg); color: var(--fg); }
+body { font: 14px/1.6 ui-monospace, "SF Mono", Menlo, Consolas, monospace; padding: 2rem 1.5rem 4rem; }
+a { color: inherit; text-decoration: none; border-bottom: 1px dotted var(--dim); }
+a:hover { color: var(--ac); border-bottom-color: var(--ac); }
+button { font: inherit; background: none; color: inherit; border: 0; padding: 0; cursor: pointer; }
+button:hover { color: var(--ac); }
+h1 { font: inherit; font-weight: 700; margin: 0; }
+header { margin-bottom: 3rem; }
+.dim { color: var(--dim); }
+nav { margin-top: 1rem; display: flex; gap: 1.5rem; flex-wrap: wrap; color: var(--dim); }
+
+/* horizontal */
+.h { overflow-x: auto; padding-bottom: 1rem; }
+.rang { display: flex; width: max-content; white-space: pre; }
+.cap { width: 4ch; flex: none; }
+.col { width: 32ch; flex: none; padding-right: 2ch; white-space: normal; }
+.axe .col { padding-right: 0; white-space: pre; }
+.it { padding-left: 2ch; text-indent: -2ch; }
+.it::before { content: "> "; color: var(--dim); }
+
+/* vertical */
+.v { max-width: 44ch; }
+.lg { display: grid; grid-template-columns: 3ch 1fr; min-height: 1.6em; white-space: pre; }
+.lg .it { white-space: normal; }
+</style>
 </head>
 <body>
-  <h1>DES7720, expériences</h1>
-  <p>Serveur local actif.</p>
-  <h2>Exercices</h2>
-  <ul id="exercices"></ul>
-  <h2>Expériences</h2>
-  <ul id="liste"></ul>
-  <script>
-    // Liste les dossiers via le listing du serveur Python (ne fonctionne pas sur GitHub Pages)
-    function lister(dossier, cible) {
-      fetch(dossier + '/').then(r => r.text()).then(t => {
-        const d = new DOMParser().parseFromString(t, 'text/html');
-        [...d.querySelectorAll('a')].map(a => a.getAttribute('href'))
-          .filter(h => h.endsWith('/') && !h.startsWith('_'))
-          .forEach(h => {
-            const li = document.createElement('li');
-            li.innerHTML = '<a href="' + dossier + '/' + h + '">' + h.replace('/', '') + '</a>';
-            document.getElementById(cible).appendChild(li);
-          });
-      }).catch(() => {});
-    }
-    lister('exercices', 'exercices');
-    lister('experiences', 'liste');
-  </script>
+<header>
+  <h1>DES7720 / Atelier de design d'expériences interactives 1</h1>
+  <div class="dim">partie 2, le code comme matière, expériences p5.js, automne 2026</div>
+  <div class="dim">professeur: Junior Vigneault</div>
+  <div class="dim">DESS en design d'expériences interactives</div>
+  <div class="dim">Faculté des arts, Université du Québec à Montréal (UQAM)</div>
+  <nav>
+    <button id="b-theme"></button>
+    <button id="b-vue"></button>
+    <button id="b-sens"></button>
+  </nav>
+</header>
+<main id="tl"></main>
+
+<script>
+const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const lire = (k, d) => { try { return localStorage.getItem(k) || d; } catch (e) { return d; } };
+const ecrire = (k, v) => { try { localStorage.setItem(k, v); } catch (e) {} };
+
+let donnees = [];
+let theme = lire('theme', matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
+let vue   = lire('vue', innerWidth < 700 ? 'v' : 'h');   // h = horizontale, v = verticale
+let sens  = lire('sens', 'asc');                         // asc = ancien > recent
+
+// Le journal (.md) s'ouvre dans journal.html, la même page en local et sur GitHub Pages.
+function lienJournal(rel) {
+  return 'journal.html?f=' + encodeURIComponent(rel).replace(/%2F/g, '/');
+}
+
+function item(i) {
+  const nom = i.lien ? '<a href="' + esc(i.lien) + '">' + esc(i.nom) + '</a>' : '<span class="dim">' + esc(i.nom) + '</span>';
+  return '<div class="it">' + nom + '</div>';
+}
+function journal(e) {
+  let h = e.journal ? ' <a href="' + esc(lienJournal(e.journal)) + '">[journal]</a>' : '';
+  if (e.youtube) h += ' <a href="' + esc(e.youtube) + '">[tutoriel]</a>';
+  return h;
+}
+
+// Le lien du tutoriel YouTube est extrait du journal (première URL youtube.com ou youtu.be).
+// Sinon, on prend la valeur "tutoriel" de timeline.json.
+function extraireYoutube(e) {
+  e.youtube = e.tutoriel || '';
+  if (!e.journal) return Promise.resolve();
+  return fetch(e.journal).then(r => r.ok ? r.text() : '').then(t => {
+    const m = t.match(/https?:\/\/(?:www\.|m\.)?(?:youtube\.com|youtu\.be)\/[^\s)>\]]+/i);
+    if (m) e.youtube = m[0];
+  }).catch(() => {});
+}
+
+function ordre() {
+  const asc = [...donnees].sort((a, b) => a.date < b.date ? -1 : 1);
+  const recentDabord = vue === 'h' ? sens === 'desc' : sens === 'asc';
+  return recentDabord ? asc.reverse() : asc;
+}
+
+function rendreH(liste) {
+  const asc = sens === 'asc';
+  const axe = 'o' + '-'.repeat(31);
+  let h = '<div class="h"><div class="rang axe"><div class="cap">' + (asc ? '+---' : '<---') + '</div>';
+  liste.forEach(() => { h += '<div class="col">' + axe + '</div>'; });
+  h += '<div class="cap">' + (asc ? '--->' : '---+') + '</div></div><div class="rang"><div class="cap"></div>';
+  liste.forEach(e => {
+    h += '<div class="col"><div>|</div><div class="dim">' + esc(e.date) + '</div><div>' + esc(e.groupe) + journal(e) + '</div><div>&nbsp;</div>'
+       + e.items.map(item).join('') + '</div>';
+  });
+  return h + '</div></div>';
+}
+
+function rendreV(liste) {
+  const asc = sens === 'asc';
+  const ligne = (g, t) => '<div class="lg"><span>' + g + '</span><span>' + t + '</span></div>';
+  let h = '<div class="v">' + ligne(asc ? '^' : '+', '');
+  liste.forEach(e => {
+    h += ligne('|', '') + ligne('o', '<span class="dim">' + esc(e.date) + '</span>  ' + esc(e.groupe) + journal(e));
+    e.items.forEach(i => { h += ligne('|', '<span class="it">' + item(i).replace(/^<div class="it">|<\/div>$/g, '') + '</span>'); });
+  });
+  return h + ligne('|', '') + ligne(asc ? '+' : 'v', '') + '</div>';
+}
+
+function rendre() {
+  document.documentElement.dataset.theme = theme;
+  $('b-theme').textContent = '[ thème: ' + (theme === 'dark' ? 'sombre' : 'clair') + ' ]';
+  $('b-vue').textContent   = '[ vue: ' + (vue === 'h' ? 'horizontale' : 'verticale') + ' ]';
+  $('b-sens').textContent  = '[ ordre: ' + (sens === 'asc' ? 'ancien > récent' : 'récent > ancien') + ' ]';
+  const liste = ordre();
+  $('tl').innerHTML = vue === 'h' ? rendreH(liste) : rendreV(liste);
+}
+
+$('b-theme').onclick = () => { theme = theme === 'dark' ? 'light' : 'dark'; ecrire('theme', theme); rendre(); };
+$('b-vue').onclick   = () => { vue = vue === 'h' ? 'v' : 'h'; ecrire('vue', vue); rendre(); };
+$('b-sens').onclick  = () => { sens = sens === 'asc' ? 'desc' : 'asc'; ecrire('sens', sens); rendre(); };
+
+fetch('timeline.json').then(r => r.json()).then(d => { donnees = d.entrees; return Promise.all(donnees.map(extraireYoutube)); }).then(rendre)
+  .catch(() => { $('tl').textContent = 'timeline.json introuvable (npm run dev pour tester en local)'; });
+</script>
 </body>
 </html>

@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <title>DES7720, expériences</title>
+  <style>
+    body { font: 16px/1.5 "Helvetica Neue", Helvetica, Arial, sans-serif; max-width: 40rem; margin: 3rem auto; padding: 0 1rem; }
+    code { background: #eee; padding: 0 .25em; }
+  </style>
+</head>
+<body>
+  <h1>DES7720, expériences</h1>
+  <p>Serveur local actif.</p>
+  <h2>Exercices</h2>
+  <ul id="exercices"></ul>
+  <h2>Expériences</h2>
+  <ul id="liste"></ul>
+  <script>
+    // Liste les dossiers via le listing du serveur Python (ne fonctionne pas sur GitHub Pages)
+    function lister(dossier, cible) {
+      fetch(dossier + '/').then(r => r.text()).then(t => {
+        const d = new DOMParser().parseFromString(t, 'text/html');
+        [...d.querySelectorAll('a')].map(a => a.getAttribute('href'))
+          .filter(h => h.endsWith('/') && !h.startsWith('_'))
+          .forEach(h => {
+            const li = document.createElement('li');
+            li.innerHTML = '<a href="' + dossier + '/' + h + '">' + h.replace('/', '') + '</a>';
+            document.getElementById(cible).appendChild(li);
+          });
+      }).catch(() => {});
+    }
+    lister('exercices', 'exercices');
+    lister('experiences', 'liste');
+  </script>
+</body>
+</html>

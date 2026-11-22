@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DES7720 / journal</title>
+<style>
+:root { --bg:#fafafa; --fg:#111; --dim:#888; --ac:#e8590c; }
+[data-theme="dark"] { --bg:#111; --fg:#ddd; --dim:#777; --ac:#ff922b; }
+html, body { margin: 0; background: var(--bg); color: var(--fg); }
+body { font: 14px/1.6 ui-monospace, "SF Mono", Menlo, Consolas, monospace; padding: 2rem 1.5rem 4rem; max-width: 80ch; }
+a { color: inherit; text-decoration: none; border-bottom: 1px dotted var(--dim); }
+a:hover { color: var(--ac); border-bottom-color: var(--ac); }
+.dim { color: var(--dim); }
+pre { font: inherit; white-space: pre-wrap; word-wrap: break-word; margin: 2rem 0 0; }
+b { font-weight: 700; }
+</style>
+</head>
+<body>
+<a href="index.html">&lt; timeline</a> <span class="dim" id="nom"></span>
+<pre id="txt"></pre>
+<script>
+try { document.documentElement.dataset.theme = localStorage.getItem('theme') || (matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark'); } catch (e) {}
+const esc = s => s.replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const f = new URLSearchParams(location.search).get('f') || '';
+// seulement les fichiers du dossier journal/
+if (!/^journal\/[\w.\-]+\.md$/.test(f)) {
+  document.getElementById('txt').textContent = 'fichier non valide';
+} else {
+  document.getElementById('nom').textContent = '/ ' + f;
+  fetch(f).then(r => { if (!r.ok) throw 0; return r.text(); }).then(t => {
+    t = t.replace(/^---\r?\n[\s\S]*?\r?\n---\r?\n/, '');   // retire l'en-tête technique
+    document.getElementById('txt').innerHTML = esc(t).split('\n').map(l =>
+      /^#{1,6} /.test(l) ? '<b>' + l + '</b>' : l
+    ).join('\n').replace(/(https?:\/\/[^\s)<]+)/g, '<a href="$1">$1</a>');
+  }).catch(() => { document.getElementById('txt').textContent = 'journal introuvable'; });
+}
+</script>
+</body>
+</html>
