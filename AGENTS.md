@@ -6,7 +6,7 @@ Ce fichier s'adresse à tout agent de code (Claude Code, Codex, Cursor, Zed, Gem
 Repo d'expérimentations p5.js pour le cours DES7720 (UQAM, DESS design d'expériences interactives, prof. Junior Vigneault, automne 2026). Le code est une matière: friction intentionnelle, délais, erreurs productives, règles, ambiguïté. L'étudiant est l'auteur du repo.
 
 ## Structure
-- `exercices/cours_N/`: exercices fournis par Junior (p5.js par CDN 1.11.11, README de démo). Ne pas les réécrire ni les uniformiser: l'étudiant les travaille avec des commits par étape.
+- `experiences/cours_N/`: exercices fournis par Junior (p5.js par CDN 1.11.11, README de démo). Ne pas les réécrire ni les uniformiser: l'étudiant les travaille avec des commits par étape.
 - `experiences/exp-XX_nom/`: expériences de l'étudiant, créées avec `npm run nouvelle -- XX nom`. Modèle dans `experiences/_modele/`.
 - `libs/`: p5.js 1.11.13 et p5.sound en local. Pas de CDN, pas de build, HTML + `sketch.js` simples.
 - `journal/`: un fichier par séance, modèle dans `journal/_modele.md`.

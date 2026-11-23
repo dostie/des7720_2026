@@ -9,8 +9,7 @@ Thème de la partie 2: **le code comme matière**. Le code (p5.js) sert à fabri
 | Dossier | Contenu |
 |---|---|
 | `journal/` | Un fichier par séance (intention, changements, effets, accidents, prochaine piste) |
-| `exercices/` | Exercices donnés par Junior, un dossier par cours (`exercices/cours_N/`), gardés tels que fournis puis travaillés avec des commits |
-| `experiences/` | Une expérience p5.js par dossier, avec son README |
+| `experiences/` | Les expérimentations p5.js: un dossier par expérience (`exp-XX_nom/`, avec son README) et un dossier par cours (`cours_N/`) pour les exercices donnés par Junior, gardés tels que fournis puis travaillés avec des commits |
 | `projet/01_video/` | Prototype vidéo (10 %) |
 | `projet/02_interactif/` | Prototype interactif final (20 %) |
 | `projet/03_tests/` | Observations et réactions lors des tests |
@@ -20,12 +19,12 @@ Thème de la partie 2: **le code comme matière**. Le code (p5.js) sert à fabri
 ## Index des expérimentations
 
 <!-- INDEX:DEBUT (généré par `npm run timeline`, ne pas modifier à la main) -->
-| Date | Cours | Type | Nom | Intention |
-|---|---|---|---|---|
-| 2026-11-16 | cours 1 | exercice | [exercice 1, intro p5.js](exercices/cours_1/exercice_1.html) |  |
-| 2026-11-16 | cours 1 | exercice | [exercice 2, dessiner avec une photo](exercices/cours_1/exercice_2.html) |  |
-| 2026-11-16 | cours 1 | expérience | [exp-00 prise en main](experiences/exp-00_prise-en-main/) | Test d'installation. Si on voit un cercle blanc qui suit la souris, un point orange qui traverse l'écran et une ligne de texte avec la ve... |
-| 2026-11-23 | cours 2 | exercice | [exercice 3, conditions, animations et sons](exercices/cours_2/exercice_3.html) |  |
+| Date | Cours | Nom | Intention |
+|---|---|---|---|
+| 2026-11-16 | cours 1 | [exercice 1, intro p5.js](experiences/cours_1/exercice_1.html) |  |
+| 2026-11-16 | cours 1 | [exercice 2, dessiner avec une photo](experiences/cours_1/exercice_2.html) |  |
+| 2026-11-16 | cours 1 | [exp-00 prise en main](experiences/exp-00_prise-en-main/) | Test d'installation. Si on voit un cercle blanc qui suit la souris, un point orange qui traverse l'écran et une ligne de texte avec la ve... |
+| 2026-11-23 | cours 2 | [exercice 3, conditions, animations et sons](experiences/cours_2/exercice_3.html) |  |
 <!-- INDEX:FIN -->
 
 ## Jalons

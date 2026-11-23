@@ -19,4 +19,4 @@ Note: le cours du 9 novembre a été annulé (grève). Le calendrier du cours 0 
 
 Site du cours: https://juniorvigneault.github.io/DES7720_2026/ (cours 1: /cours-1.html, qui ne contient que le tuto 1 et les liens).
 
-Exercices de chaque cours: `exercices/cours_N/` dans le repo (cours_1 déjà en place).
+Exercices de chaque cours: `experiences/cours_N/` dans le repo (cours_1 et cours_2 en place).

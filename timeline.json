@@ -6,8 +6,8 @@
       "journal": "journal/2026-11-16_cours-1.md",
       "tutoriel": "https://youtu.be/OOdqzW1JO-o",
       "items": [
-        { "nom": "exercice 1, intro p5.js", "lien": "exercices/cours_1/exercice_1.html" },
-        { "nom": "exercice 2, dessiner avec une photo", "lien": "exercices/cours_1/exercice_2.html" },
+        { "nom": "exercice 1, intro p5.js", "lien": "experiences/cours_1/exercice_1.html" },
+        { "nom": "exercice 2, dessiner avec une photo", "lien": "experiences/cours_1/exercice_2.html" },
         { "nom": "exp-00 prise en main", "lien": "experiences/exp-00_prise-en-main/" }
       ]
     },
@@ -17,7 +17,7 @@
       "journal": "journal/2026-11-23_cours-2.md",
       "tutoriel": "https://youtu.be/1tLfGtSMtj0",
       "items": [
-        { "nom": "exercice 3, conditions, animations et sons", "lien": "exercices/cours_2/exercice_3.html" }
+        { "nom": "exercice 3, conditions, animations et sons", "lien": "experiences/cours_2/exercice_3.html" }
       ]
     }
   ]

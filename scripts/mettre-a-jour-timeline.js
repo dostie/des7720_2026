@@ -6,7 +6,7 @@
 //   - timeline.json (la page d'accueil)
 //   - le tableau d'index du README (entre INDEX:DEBUT et INDEX:FIN)
 // Ne supprime rien et ne touche pas à ce que tu as écrit à la main dans timeline.json.
-// Crée seulement les pages exercices/cours_N/exercice_K.html qui manquent.
+// Crée seulement les pages experiences/cours_N/exercice_K.html qui manquent.
 
 const fs = require('fs');
 const path = require('path');
@@ -37,7 +37,7 @@ function dateGit(rel) {
   } catch (e) { return null; }
 }
 const lister = d => (fs.existsSync(d) ? fs.readdirSync(d) : []);
-const rang = lien => (lien.startsWith('exercices/') ? 0 : lien.startsWith('experiences/') ? 1 : 2);
+const rang = lien => (/\/exercice_\d+\.html$/.test(lien) ? 0 : lien.startsWith('experiences/') ? 1 : 2);
 
 // ---------- état actuel ----------
 let ancien = [];
@@ -51,14 +51,14 @@ for (const f of lister(P('journal'))) {
   const m = f.match(/^(\d{4}-\d{2}-\d{2})_cours-(\d+)\.md$/);
   if (m) cours.set(Number(m[2]), { date: m[1], journal: 'journal/' + f });
 }
-for (const d of lister(P('exercices'))) {
+for (const d of lister(P('experiences'))) {
   const m = d.match(/^cours_(\d+)$/);
   if (m && !cours.has(Number(m[1]))) cours.set(Number(m[1]), {});
 }
 
 // ---------- pages d'exercices manquantes ----------
 function creerPage(n, k) {
-  const dir = P('exercices', 'cours_' + n);
+  const dir = P('experiences', 'cours_' + n);
   const page = path.join(dir, 'exercice_' + k + '.html');
   if (fs.existsSync(page)) return;
   const modele = lire(path.join(dir, 'index.html'));
@@ -70,12 +70,12 @@ function creerPage(n, k) {
     .replace(/^[ \t]*<!-- <script[^\n]*-->[ \t]*\r?\n/gm, '')
     .replace(/<script src="js\/exercice_\d+\.js"><\/script>/, '<script src="js/exercice_' + k + '.js"></script>')
     .replace(/<title>[^<]*<\/title>/, '<title>Cours ' + n + ', exercice ' + k + '</title>');
-  info.push('+ page créée: exercices/cours_' + n + '/exercice_' + k + '.html');
+  info.push('+ page créée: experiences/cours_' + n + '/exercice_' + k + '.html');
   if (!simuler) fs.writeFileSync(page, html);
 }
 
 function nomExercice(n, k) {
-  const l1 = lire(P('exercices', 'cours_' + n, 'js', 'exercice_' + k + '.js')).split('\n')[0] || '';
+  const l1 = lire(P('experiences', 'cours_' + n, 'js', 'exercice_' + k + '.js')).split('\n')[0] || '';
   const m = l1.match(/EXERCICE\s+\d+\s*[\u2014\u2013-]+\s*(.+)$/i);
   return m ? 'exercice ' + k + ', ' + minuscule(propre(m[1])) : 'exercice ' + k;
 }
@@ -86,16 +86,16 @@ for (const [n, c] of [...cours.entries()].sort((a, b) => a[0] - b[0])) {
   const groupe = 'cours ' + n;
   const e = Object.assign({}, groupes.get(groupe) || { groupe });
   e.groupe = groupe;
-  e.date = c.date || e.date || dateGit('exercices/cours_' + n) || aujourdhui();
+  e.date = c.date || e.date || dateGit('experiences/cours_' + n) || aujourdhui();
   if (c.journal) e.journal = c.journal;
   e.items = (e.items || []).slice();
   if (!groupes.has(groupe)) info.push('+ entrée: ' + groupe + ' (' + e.date + ')');
 
-  for (const f of lister(P('exercices', 'cours_' + n, 'js'))) {
+  for (const f of lister(P('experiences', 'cours_' + n, 'js'))) {
     const m = f.match(/^exercice_(\d+)\.js$/);
     if (!m) continue;
     creerPage(n, m[1]);
-    const lien = 'exercices/cours_' + n + '/exercice_' + m[1] + '.html';
+    const lien = 'experiences/cours_' + n + '/exercice_' + m[1] + '.html';
     const existe = fs.existsSync(P(lien)) || simuler;
     if (existe && !ancien.some(x => (x.items || []).some(i => i.lien === lien))) {
       e.items.push({ nom: nomExercice(n, m[1]), lien });
@@ -107,7 +107,7 @@ for (const [n, c] of [...cours.entries()].sort((a, b) => a[0] - b[0])) {
 
 // ---------- expériences ----------
 for (const d of lister(P('experiences')).sort()) {
-  if (d.startsWith('_') || !fs.existsSync(P('experiences', d, 'index.html'))) continue;
+  if (d.startsWith('_') || /^cours_\d+$/.test(d) || !fs.existsSync(P('experiences', d, 'index.html'))) continue;
   const lien = 'experiences/' + d + '/';
   if (entrees.some(x => x.items.some(i => i.lien === lien))) continue;
   const date = dateGit('experiences/' + d) || aujourdhui();
@@ -153,6 +153,7 @@ if (sortie !== lire(P('timeline.json'))) {
 
 // ---------- index du README ----------
 function intention(lien) {
+  if (/\/exercice_\d+\.html$/.test(lien)) return '';
   const m = lien.match(/^experiences\/([^/]+)\//);
   if (!m) return '';
   const txt = lire(P('experiences', m[1], 'README.md')).replace(/\r/g, '');
@@ -166,13 +167,12 @@ function intention(lien) {
 const lignes = [];
 for (const e of entrees) {
   for (const i of e.items) {
-    const type = i.lien && i.lien.startsWith('exercices/') ? 'exercice' : i.lien && i.lien.startsWith('experiences/') ? 'expérience' : 'autre';
     const nom = i.lien ? '[' + cellule(i.nom) + '](' + i.lien + ')' : cellule(i.nom);
-    lignes.push('| ' + e.date + ' | ' + e.groupe + ' | ' + type + ' | ' + nom + ' | ' + cellule(intention(i.lien || '')) + ' |');
+    lignes.push('| ' + e.date + ' | ' + e.groupe + ' | ' + nom + ' | ' + cellule(intention(i.lien || '')) + ' |');
   }
 }
 const tableau = '<!-- INDEX:DEBUT (généré par `npm run timeline`, ne pas modifier à la main) -->\n'
-  + '| Date | Cours | Type | Nom | Intention |\n|---|---|---|---|---|\n' + lignes.join('\n') + '\n<!-- INDEX:FIN -->';
+  + '| Date | Cours | Nom | Intention |\n|---|---|---|---|\n' + lignes.join('\n') + '\n<!-- INDEX:FIN -->';
 let readme = lire(P('README.md'));
 let neuf;
 if (/<!-- INDEX:DEBUT[\s\S]*?<!-- INDEX:FIN -->/.test(readme)) {
