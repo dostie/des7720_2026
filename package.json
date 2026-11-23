@@ -6,7 +6,8 @@
     "dev": "python3 -m http.server 5500",
     "nouvelle": "sh scripts/nouvelle-experience.sh",
     "verifier": "sh scripts/verifier-confidentialite.sh --tout",
-    "hooks": "sh scripts/installer-hooks.sh"
+    "hooks": "sh scripts/installer-hooks.sh",
+    "timeline": "node scripts/mettre-a-jour-timeline.js"
   },
   "devDependencies": {
     "@types/p5": "1.7.7"

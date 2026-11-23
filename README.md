@@ -17,11 +17,16 @@ Thème de la partie 2: **le code comme matière**. Le code (p5.js) sert à fabri
 | `processus/` | Matériau du document de processus et bilan réflexif (20 %) |
 | `docs/` | Plan de cours résumé, calendrier, évaluation, conventions |
 
-## Index des expériences
+## Index des expérimentations
 
-| Id | Nom | Intention | Statut |
-|---|---|---|---|
-| | | | |
+<!-- INDEX:DEBUT (généré par `npm run timeline`, ne pas modifier à la main) -->
+| Date | Cours | Type | Nom | Intention |
+|---|---|---|---|---|
+| 2026-11-16 | cours 1 | exercice | [exercice 1, intro p5.js](exercices/cours_1/exercice_1.html) |  |
+| 2026-11-16 | cours 1 | exercice | [exercice 2, dessiner avec une photo](exercices/cours_1/exercice_2.html) |  |
+| 2026-11-16 | cours 1 | expérience | [exp-00 prise en main](experiences/exp-00_prise-en-main/) | Test d'installation. Si on voit un cercle blanc qui suit la souris, un point orange qui traverse l'écran et une ligne de texte avec la ve... |
+| 2026-11-23 | cours 2 | exercice | [exercice 3, conditions, animations et sons](exercices/cours_2/exercice_3.html) |  |
+<!-- INDEX:FIN -->
 
 ## Jalons
 
